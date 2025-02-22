@@ -1,5 +1,3 @@
-import openai
-import os
 
 # Set your OpenAI API key as an environment variable for security
 openai.api_key = os.getenv("OPENAI_API_KEY")
