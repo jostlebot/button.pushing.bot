@@ -14,7 +14,8 @@ def get_mission():
     print("Thinking of a new magical mission...")
     time.sleep(2)  # Small pause for dramatic effect
 
-    response = openai.ChatCompletion.create(
+    client = openai.OpenAI()
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "user", "content": prompt}
@@ -26,7 +27,9 @@ def get_mission():
         presence_penalty=0
     )
     
-    mission = response['choices'][0]['message']['content']
+    mission = response.choices[0].message.content.strip()
+    # Clean up the response by removing any "Mission:" prefix
+    mission = mission.replace("Mission:", "").strip()
     return mission
 
 def main():
@@ -38,9 +41,9 @@ def main():
         print("\n✨ Your next mission is loading... ✨")
         mission = get_mission()
         
-        # Separate mission from upgrade
-        mission_lines = mission.split("\n")
-        current_mission = mission_lines[0]
+        # Separate mission from upgrade and clean up any empty lines
+        mission_lines = [line.strip() for line in mission.split("\n") if line.strip()]
+        current_mission = mission_lines[0] if mission_lines else "Error getting mission"
         upgrade = mission_lines[1] if len(mission_lines) > 1 else "You gained a magical power!"
         
         # Show the mission details
