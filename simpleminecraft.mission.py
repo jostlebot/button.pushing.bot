@@ -1,5 +1,11 @@
 import openai
+from openai import OpenAI
+import os
 import time
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists
+load_dotenv()
 
 def get_mission():
     prompt = (
@@ -14,7 +20,13 @@ def get_mission():
     print("Thinking of a new magical mission...")
     time.sleep(2)  # Small pause for dramatic effect
 
-    client = openai.OpenAI()
+    # Initialize the OpenAI client
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    
+    # Check if API key is loaded
+    if client.api_key is None:
+        raise ValueError("API Key not found. Make sure OPENAI_API_KEY is set in your environment variables.")
+    
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[

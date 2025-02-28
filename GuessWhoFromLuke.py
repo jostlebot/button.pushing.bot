@@ -1,8 +1,20 @@
 import os
 import openai
+from openai import OpenAI
+from dotenv import load_dotenv
 
-response = openai.ChatCompletion.create(
-    model="gpt-4-turbo",
+# Load environment variables from .env file if it exists
+load_dotenv()
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Check if API key is loaded
+if client.api_key is None:
+    raise ValueError("API Key not found. Make sure OPENAI_API_KEY is set in your environment variables.")
+
+response = client.chat.completions.create(
+    model="gpt-4o",  # Updated to latest model
     messages=[
         {
             "role": "system",
@@ -36,4 +48,4 @@ response = openai.ChatCompletion.create(
     presence_penalty=0
 )
 
-print(response['choices'][0]['message']['content'])
+print(response.choices[0].message.content)
